@@ -46,3 +46,15 @@
     font-size: 16px;
     position: absolute;
 }
+
+/* stylying WEatherForecast */
+.max-forecast {
+    font: bold;
+    margin-left: 5px;
+    color: black;
+}
+
+.min-forecast {
+    opacity: 0.6;
+    color: black;
+}
