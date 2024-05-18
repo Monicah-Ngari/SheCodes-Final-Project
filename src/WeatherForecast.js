@@ -1,37 +1,57 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Day from "./Day";
 
 export default function WeatherForecast(props) {
-  const weatherData = props.weatherData;
-  function handleResponse(response) {
-    console.log(response.data);
-  }
+  const [loaded, setLoaded] = useState(false);
+  const [forecast, setForecast] = useState(null);
 
-  let apikey = "1a2a473db97faf41f0088oe8t98271ff";
-  let longitude = props.coordinates.lon;
-  let latitude = props.coordinates.lat;
-  let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&appid=${apikey}&units= metric`;
-  axios.get(apiUrl).then(handleResponse);
+  const weatherData = props.weatherData;
+
+  useEffect(() => {
+    let apiKey = "fbef01f4et1b02o0d25c27210a43ef3f";
+    let longitude = weatherData.coordinates.longitude;
+    let latitude = weatherData.coordinates.latitude;
+    let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lat=${latitude}&lon=${longitude}&key=${apiKey}&units=metric`;
+
+    axios
+      .get(apiUrl)
+      .then((response) => {
+        setForecast(response.data.daily);
+        setLoaded(true);
+      })
+      .catch((error) => {
+        console.error("Error fetching weather forecast:", error);
+      });
+  }, [weatherData]);
+
+  if (!loaded) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="WeatherForecast">
       <div className="row">
-        <div className="col">
-          <div>
-            <strong>
-              {" "}
-              <Day date={weatherData.date} />
-            </strong>
+        {forecast.map((dayForecast) => (
+          <div className="col" key={dayForecast.date}>
+            <div>
+              <strong>
+                <Day date={new Date(dayForecast.date)} />
+              </strong>
+            </div>
+            <div>
+              <img src={dayForecast.condition.icon_url} alt="Weather Icon" />
+            </div>
+            <div>
+              <span className="max-forecast">
+                {Math.round(dayForecast.temperature.maximum)} °
+              </span>
+              <span className="min-forecast">
+                {Math.round(dayForecast.temperature.minimum)} °
+              </span>
+            </div>
           </div>
-          <div>
-            <img src={weatherData.icon} alt="Weather Icon" />
-          </div>
-          <div>
-            <span className="max-forecast">19 °</span>
-            <span className="min-forecast">13 °</span>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
