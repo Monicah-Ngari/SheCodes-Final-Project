@@ -29,10 +29,12 @@ export default function WeatherForecast(props) {
     return <div>Loading...</div>;
   }
 
+  const limitedForecast = forecast.slice(0, 5);
+
   return (
     <div className="WeatherForecast">
       <div className="row">
-        {forecast.map((dayForecast) => (
+        {limitedForecast.map((dayForecast) => (
           <div className="col" key={dayForecast.date}>
             <div>
               <strong>
