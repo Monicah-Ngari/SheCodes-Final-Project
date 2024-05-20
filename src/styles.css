@@ -4,6 +4,10 @@
 }
 
 .cityTemp a {
+    color: white;
+    text-decoration: none;
+}
+.cityTemp a visited {
     color: rgb(255, 234, 0);
 }
 
