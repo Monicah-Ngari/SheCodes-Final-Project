@@ -38,7 +38,7 @@ export default function WeatherForecast(props) {
           <div className="col" key={dayForecast.date}>
             <div>
               <strong>
-                <Day date={new Date(dayForecast.date)} />
+                <Day date={new Date(dayForecast.time * 1000)} />
               </strong>
             </div>
             <div>
