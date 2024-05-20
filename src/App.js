@@ -13,11 +13,11 @@ export default function App() {
             <strong>Monicah Ngari</strong>
           </a>{" "}
           and is{" "}
-          <a href="https://github.com/Monicah-Ngari/tesstAppp">
+          <a href="https://github.com/Monicah-Ngari/SheCodes-Final-Project">
             <strong>open sourced on Github</strong>
           </a>
           and{" "}
-          <a href="https://spiffy-lollipop-feca24.netlify.app/">
+          <a href="https://superb-youtiao-7bdfc7.netlify.app/">
             <strong>hosted on Netlify</strong>
           </a>
         </em>
