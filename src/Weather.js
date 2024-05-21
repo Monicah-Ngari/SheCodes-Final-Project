@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Units from "./Units";
 import Day from "./Day";
@@ -7,6 +7,11 @@ import WeatherForecast from "./WeatherForecast";
 export default function Weather(props) {
   const [weatherData, setWeatherData] = useState({ ready: false });
   const [city, setCity] = useState(props.defaultCity);
+  const [inputValue, setInputValue] = useState(props.defaultCity);
+
+  useEffect(() => {
+    search();
+  }, []); 
 
   function handleResponse(response) {
     const date = new Date(response.data.time * 1000);
@@ -22,28 +27,30 @@ export default function Weather(props) {
       description: response.data.condition.description,
       icon: response.data.condition.icon_url,
       date: date,
-      ready: true, // Set ready to true once data is fetched
+      ready: true, 
     });
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    search();
+    setCity(inputValue); 
+    search(inputValue);
   }
 
   function handleCityChange(event) {
-    setCity(event.target.value);
+    setInputValue(event.target.value); 
   }
 
-  function search() {
+  function search(query) {
+    let queryCity = query || city;
     let apiKey = "fbef01f4et1b02o0d25c27210a43ef3f";
-    let url = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+    let url = `https://api.shecodes.io/weather/v1/current?query=${queryCity}&key=${apiKey}&units=metric`;
     axios
       .get(url)
       .then(handleResponse)
       .catch((error) => {
         console.error("Error fetching weather data:", error);
-        setWeatherData({ ready: false }); // Set ready state to false on error
+        setWeatherData({ ready: false });
       });
   }
 
@@ -57,6 +64,7 @@ export default function Weather(props) {
               placeholder="Type City"
               autoFocus="on"
               onChange={handleCityChange}
+              value={inputValue}
               className="form-control col-md-9"
             />
             <input
@@ -115,11 +123,6 @@ export default function Weather(props) {
       </div>
     );
   } else {
-    if (!city) {
-      return <div>Enter a city to search</div>;
-    } else {
-      search();
-      return <div>Loading...</div>;
-    }
+    return <div>Loading...</div>;
   }
 }
