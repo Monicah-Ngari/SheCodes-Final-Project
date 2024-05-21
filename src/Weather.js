@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import Units from "./Units";
 import Day from "./Day";
@@ -9,9 +9,21 @@ export default function Weather(props) {
   const [city, setCity] = useState(props.defaultCity);
   const [inputValue, setInputValue] = useState(props.defaultCity);
 
+  const search = useCallback(() => {
+    let apiKey = "fbef01f4et1b02o0d25c27210a43ef3f";
+    let url = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+    axios
+      .get(url)
+      .then(handleResponse)
+      .catch((error) => {
+        console.error("Error fetching weather data:", error);
+        setWeatherData({ ready: false }); 
+      });
+  }, [city]);
+
   useEffect(() => {
     search();
-  }, []); 
+  }, [search]);
 
   function handleResponse(response) {
     const date = new Date(response.data.time * 1000);
@@ -27,31 +39,17 @@ export default function Weather(props) {
       description: response.data.condition.description,
       icon: response.data.condition.icon_url,
       date: date,
-      ready: true, 
+      ready: true, // Set ready to true once data is fetched
     });
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    setCity(inputValue); 
-    search(inputValue);
+    setCity(inputValue); // Update city state on submit
   }
 
   function handleCityChange(event) {
-    setInputValue(event.target.value); 
-  }
-
-  function search(query) {
-    let queryCity = query || city;
-    let apiKey = "fbef01f4et1b02o0d25c27210a43ef3f";
-    let url = `https://api.shecodes.io/weather/v1/current?query=${queryCity}&key=${apiKey}&units=metric`;
-    axios
-      .get(url)
-      .then(handleResponse)
-      .catch((error) => {
-        console.error("Error fetching weather data:", error);
-        setWeatherData({ ready: false });
-      });
+    setInputValue(event.target.value); // Update input value state
   }
 
   if (weatherData.ready) {
@@ -126,3 +124,4 @@ export default function Weather(props) {
     return <div>Loading...</div>;
   }
 }
+
