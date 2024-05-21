@@ -7,11 +7,11 @@ import WeatherForecast from "./WeatherForecast";
 export default function Weather(props) {
   const [weatherData, setWeatherData] = useState({ ready: false });
   const [city, setCity] = useState(props.defaultCity);
-  const [inputValue, setInputValue] = useState(props.defaultCity);
+  const [inputValue, setInputValue] = useState("");
 
   const search = useCallback(() => {
-    let apiKey = "fbef01f4et1b02o0d25c27210a43ef3f";
-    let url = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+    const apiKey = "fbef01f4et1b02o0d25c27210a43ef3f";
+    const url = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
     axios
       .get(url)
       .then(handleResponse)
@@ -23,7 +23,7 @@ export default function Weather(props) {
 
   useEffect(() => {
     search();
-  }, [search]);
+  }, [search]); // Now search is correctly included in the dependency array
 
   function handleResponse(response) {
     const date = new Date(response.data.time * 1000);
@@ -39,17 +39,17 @@ export default function Weather(props) {
       description: response.data.condition.description,
       icon: response.data.condition.icon_url,
       date: date,
-      ready: true, // Set ready to true once data is fetched
+      ready: true, 
     });
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    setCity(inputValue); // Update city state on submit
+    setCity(inputValue); 
   }
 
   function handleCityChange(event) {
-    setInputValue(event.target.value); // Update input value state
+    setInputValue(event.target.value); 
   }
 
   if (weatherData.ready) {
@@ -59,7 +59,7 @@ export default function Weather(props) {
           <form onSubmit={handleSubmit}>
             <input
               type="search"
-              placeholder="Type City"
+              placeholder="Type city"
               autoFocus="on"
               onChange={handleCityChange}
               value={inputValue}
@@ -124,4 +124,3 @@ export default function Weather(props) {
     return <div>Loading...</div>;
   }
 }
-
